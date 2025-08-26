@@ -1,0 +1,39 @@
+{
+  "name": "express-crud",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Vo Van Tri",
+  "type": "commonjs",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && npm run copy-config && node dist/server.js",
+    "build": "tsc",
+    "copy-config": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'dist/config'; Copy-Item 'src/config/config.json' 'dist/config/'\"",
+    "dev": "nodemon --exec ts-node src/server.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.2.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.3",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/node": "^7.28.0",
+    "@babel/preset-env": "^7.28.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/body-parser": "^1.19.6",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "@types/sequelize": "^4.28.20",
+    "nodemon": "^3.1.10",
+    "sequelize-cli": "^6.6.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
