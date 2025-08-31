@@ -7,7 +7,8 @@ const configViewEngine = (app) => {
 
   
   app.use(express.static(path.join('./src','public'))); // middleware để phục vụ file tĩnh (static files) như CSS, JS, ảnh, fonts...
-  // Nghĩa là khi bạn truy cập http://localhost:8080/css/style.css, Express sẽ tự tìm file ./src/public/css/style.css để trả về.
+  // Khi này http://localhost:8080 tương ứng với ./src/public
+  // Nghĩa là khi bạn truy cập http://localhost:8080/img/logo.png, Express sẽ tự tìm file ./src/public/img/logo.png để trả về. 
 }
 
 module.exports = configViewEngine;
