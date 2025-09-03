@@ -86,10 +86,35 @@ const loginService = async (email, password) => {
     }
 }
 
-const getUserService = async () => {
+const getUserService = async (current = 1, pageSize = 5) => {
     try {
-        let result = await User.find({}).select('-password');
-        return result;
+        // Chuyển đổi current và pageSize thành số nguyên
+        const currentPage = parseInt(current);
+        const limit = parseInt(pageSize);
+        
+        // Tính toán offset (số bản ghi cần bỏ qua)
+        const skip = (currentPage - 1) * limit;
+        
+        // Lấy dữ liệu với phân trang
+        const result = await User.find({})
+            .select('-password')
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo mới nhất
+        
+        // Đếm tổng số bản ghi
+        const totalItems = await User.countDocuments({});
+        const totalPages = Math.ceil(totalItems / limit);
+        
+        return {
+            meta: {
+                current: currentPage,
+                pageSize: limit,
+                pages: totalPages,
+                total: totalItems
+            },
+            result: result
+        };
     } catch (error) {
         console.log(">>> Error from getUserService: ", error);
         return null;

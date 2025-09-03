@@ -16,8 +16,8 @@ const loginApi = (email, password) => {
     return axios.post(URL_API, data)
 }
 
-const getUserApi = () => {
-    const URL_API = "/v1/api/users";
+const getUserApi = (current = 1, pageSize = 5) => {
+    const URL_API = `/v1/api/users?current=${current}&pageSize=${pageSize}`;
     return axios.get(URL_API)
 }
 
