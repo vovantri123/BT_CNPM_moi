@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { UserOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
+import { UserOutlined, HomeOutlined, SettingOutlined, ShoppingOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/auth.context';
+import { AuthContext } from '../context/AuthContext';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -13,6 +13,11 @@ const Header = () => {
             label: <Link to={"/"}>Home Page</Link>,
             key: 'home',
             icon: <HomeOutlined />,
+        },
+        {
+            label: <Link to={"/products"}>Products</Link>,
+            key: 'products',
+            icon: <ShoppingOutlined />,
         },
         ...(auth.isAuthenticated ? [{
             label: <Link to={"/users"}>Users</Link>,

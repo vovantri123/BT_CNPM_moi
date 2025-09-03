@@ -2,8 +2,13 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
-    const white_lists = [ "/", "/login", "/register"];
-    if(white_lists.find(item => '/v1/api' + item === req.originalUrl)){ // req.originalUrl là URL đầy đủ mà client gọi
+    const white_lists = [ "/", "/login", "/register", "/products", "/categories"];
+    
+    // Lấy pathname từ URL, bỏ qua query parameters
+    const url = new URL(req.originalUrl, `http://${req.get('host')}`);
+    const pathname = url.pathname;
+    
+    if(white_lists.find(item => '/v1/api' + item === pathname)){ // So sánh chỉ pathname
         next();
     } else {
         if(req?.headers?.authorization?.split(' ')?.[1]){ // Bearer token

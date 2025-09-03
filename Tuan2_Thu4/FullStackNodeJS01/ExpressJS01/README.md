@@ -1,3 +1,9 @@
-## Chạy script để tạo dữ liệu mẫu:
+`cd ExpressJS01`
 
-`node src/seedData.js để`
+## Chạy script để tạo dữ liệu mẫu cho user và product
+
+`node src/seedData.js`
+
+#### email: user1@gmail.com
+
+#### password: 12345678

@@ -9,7 +9,17 @@ const instance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
-    config.headers.Authorization = `Bearer ${localStorage.getItem("access_token")}`;
+    // Chỉ thêm Authorization header nếu có token và không phải là public endpoints
+    const publicEndpoints = ['/v1/api/products', '/v1/api/categories', '/v1/api/register', '/v1/api/login'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
+    
+    if (!isPublicEndpoint) {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+    
     return config;
 }, function (error) {
     // Do something with request error

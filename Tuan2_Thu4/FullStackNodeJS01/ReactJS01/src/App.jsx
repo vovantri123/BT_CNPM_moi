@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Header from "./components/layout/header";
-import axios from "./util/axios.customize"
+import Header from "./components/layout/Header";
+import axios from "./services/axios.customize"
 import { useContext, useEffect } from "react"
-import { AuthContext } from "./components/context/auth.context";
+import { AuthContext } from "./components/context/AuthContext";
 import { Spin } from "antd";
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
     useEffect(() => {
         const fetchAccount = async () => {
             setAppLoading(true);
-            const res = await axios.get('/v1/api/user');
+            const res = await axios.get('/v1/api/account');
             if (res && !res.message) {
                 setAuth({
                     isAuthenticated: true,
