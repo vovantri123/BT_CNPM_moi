@@ -13,7 +13,9 @@ const handleLogin = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const data = await getUserService();
+    const current = req.query.current;
+    const pageSize = req.query.pageSize;
+    const data = await getUserService(current, pageSize);
     return res.status(200).json(data);
 }
 

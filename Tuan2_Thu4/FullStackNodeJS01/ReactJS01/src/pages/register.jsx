@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
-import { createUserApi } from '../util/api';
+import { createUserApi } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 

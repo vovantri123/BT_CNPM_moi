@@ -1,5 +1,5 @@
 const getHomepage = (req, res) => {
-    return res.render("index.ejs");
+    return res.render('home.ejs');
 }
 
 module.exports = {
