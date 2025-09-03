@@ -4,6 +4,7 @@ import { loginApi } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/context/AuthContext';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { MESSAGES, STORAGE_KEYS, VALIDATION_MESSAGES } from '../constants';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -15,10 +16,10 @@ const LoginPage = () => {
         const res = await loginApi(email, password);
         
         if (res && res.EC === 0) {
-            localStorage.setItem("access_token", res.DT.access_token)
+            localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, res.DT.access_token)
             notification.success({
                 message: "LOGIN USER",
-                description: "Success"
+                description: MESSAGES.LOGIN_SUCCESS
             });
             setAuth({
                 isAuthenticated: true,
@@ -31,7 +32,7 @@ const LoginPage = () => {
         } else {
             notification.error({
                 message: "LOGIN USER",
-                description: res?.EM ?? "error"
+                description: res?.EM ?? MESSAGES.ERROR
             })
         }
     };
@@ -58,8 +59,12 @@ const LoginPage = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your email!',
+                                    message: VALIDATION_MESSAGES.REQUIRED_EMAIL,
                                 },
+                                {
+                                    type: 'email',
+                                    message: VALIDATION_MESSAGES.INVALID_EMAIL,
+                                }
                             ]}
                         >
                             <Input />
@@ -71,8 +76,12 @@ const LoginPage = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your password!',
+                                    message: VALIDATION_MESSAGES.REQUIRED_PASSWORD,
                                 },
+                                {
+                                    min: 6,
+                                    message: VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH,
+                                }
                             ]}
                         >
                             <Input.Password />

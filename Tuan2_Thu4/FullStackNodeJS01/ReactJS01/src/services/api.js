@@ -1,40 +1,37 @@
 import axios from './axios.customize';
+import { API_ENDPOINTS, PAGINATION } from '../constants/config';
 
 const createUserApi = (name, email, password) => {
-    const URL_API = "/v1/api/register";
     const data = {
         name, email, password
     }
-    return axios.post(URL_API, data)
+    return axios.post(API_ENDPOINTS.REGISTER, data)
 }
 
 const loginApi = (email, password) => {
-    const URL_API = "/v1/api/login";
     const data = {
         email, password
     }
-    return axios.post(URL_API, data)
+    return axios.post(API_ENDPOINTS.LOGIN, data)
 }
 
 const getUserApi = (current = 1, pageSize = 5) => {
-    const URL_API = `/v1/api/users?current=${current}&pageSize=${pageSize}`;
+    const URL_API = `${API_ENDPOINTS.USERS}?current=${current}&pageSize=${pageSize}`;
     return axios.get(URL_API)
 }
 
 // Product APIs - với lazy loading
-const getProductsByCategoryApi = (category = 'all', skip = 0, limit = 12) => {
-    const URL_API = `/v1/api/products?category=${category}&skip=${skip}&limit=${limit}`;
+const getProductsByCategoryApi = (category = 'all', skip = 0, limit = PAGINATION.DEFAULT_PAGE_SIZE) => {
+    const URL_API = `${API_ENDPOINTS.PRODUCTS}?category=${category}&skip=${skip}&limit=${limit}`;
     return axios.get(URL_API)
 }
 
 const getCategoriesApi = () => {
-    const URL_API = "/v1/api/categories";
-    return axios.get(URL_API)
+    return axios.get(API_ENDPOINTS.CATEGORIES)
 }
 
 const createProductApi = (productData) => {
-    const URL_API = "/v1/api/products";
-    return axios.post(URL_API, productData)
+    return axios.post(API_ENDPOINTS.PRODUCTS, productData)
 }
 
 export {

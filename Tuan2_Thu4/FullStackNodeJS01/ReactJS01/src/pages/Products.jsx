@@ -15,6 +15,9 @@ import {
 } from 'antd';
 import { ShoppingCartOutlined, ReloadOutlined } from '@ant-design/icons';
 import { getProductsByCategoryApi, getCategoriesApi } from '../services/api';
+import { CATEGORY_LABELS, MESSAGES } from '../constants';
+import { PAGINATION } from '../constants/config';
+import { formatPrice } from '../utils/formatters';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -36,7 +39,7 @@ const Products = () => {
         
         try {
             const cat = category || selectedCategory;
-            const response = await getProductsByCategoryApi(cat, skip, 12);
+            const response = await getProductsByCategoryApi(cat, skip, PAGINATION.DEFAULT_PAGE_SIZE);
             
             if (response?.EC === 0) {
                 const newProducts = response.DT.products || [];
@@ -45,7 +48,7 @@ const Products = () => {
                 setProducts(prev => isReset ? newProducts : [...prev, ...newProducts]);
                 setHasMore(hasMoreData);
             } else {
-                setError(response?.EM || 'Có lỗi xảy ra khi tải sản phẩm');
+                setError(response?.EM || MESSAGES.ERROR);
             }
         } catch (error) {
             console.error('Error loading products:', error);
@@ -130,25 +133,7 @@ const Products = () => {
     };
 
     const getCategoryLabel = (category) => {
-        const categoryLabels = {
-            'all': 'Tất cả sản phẩm',
-            'electronics': 'Điện tử',
-            'clothing': 'Thời trang',
-            'books': 'Sách',
-            'home': 'Gia dụng',
-            'sports': 'Thể thao',
-            'beauty': 'Làm đẹp',
-            'toys': 'Đồ chơi',
-            'food': 'Thực phẩm'
-        };
-        return categoryLabels[category] || category;
-    };
-
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
+        return CATEGORY_LABELS[category] || category;
     };
 
     if (initialLoading) {
@@ -156,7 +141,7 @@ const Products = () => {
             <div style={{ padding: '50px 24px', textAlign: 'center' }}>
                 <Spin size="large">
                     <div style={{ padding: '50px' }}>
-                        <Text>Đang tải sản phẩm...</Text>
+                        <Text>{MESSAGES.LOADING}</Text>
                     </div>
                 </Spin>
             </div>
@@ -307,7 +292,7 @@ const Products = () => {
                         <div style={{ textAlign: 'center', padding: '24px' }}>
                             <Spin size="large">
                                 <div style={{ padding: '20px' }}>
-                                    <Text>Đang tải thêm sản phẩm...</Text>
+                                    <Text>{MESSAGES.LOADING_MORE}</Text>
                                 </div>
                             </Spin>
                         </div>

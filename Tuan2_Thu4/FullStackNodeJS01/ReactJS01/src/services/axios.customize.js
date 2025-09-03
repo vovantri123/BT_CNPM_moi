@@ -1,8 +1,10 @@
 import axios from "axios";
+import { APP_CONFIG, API_ENDPOINTS } from "../constants/config";
+import { STORAGE_KEYS } from "../constants";
 
 // Set config defaults when creating the instance
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL
+    baseURL: import.meta.env.VITE_BACKEND_URL || APP_CONFIG.API_BASE_URL
 });
 
 // Alter defaults after instance has been created
@@ -10,11 +12,11 @@ const instance = axios.create({
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
     // Chỉ thêm Authorization header nếu có token và không phải là public endpoints
-    const publicEndpoints = ['/v1/api/products', '/v1/api/categories', '/v1/api/register', '/v1/api/login'];
+    const publicEndpoints = [API_ENDPOINTS.PRODUCTS, API_ENDPOINTS.CATEGORIES, API_ENDPOINTS.REGISTER, API_ENDPOINTS.LOGIN];
     const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
     
     if (!isPublicEndpoint) {
-        const token = localStorage.getItem("access_token");
+        const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

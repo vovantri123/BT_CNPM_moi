@@ -3,6 +3,7 @@ import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
 import { createUserApi } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { MESSAGES, VALIDATION_MESSAGES } from '../constants';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -15,13 +16,13 @@ const RegisterPage = () => {
         if (res) {
             notification.success({
                 message: "CREATE USER",
-                description: "Success"
+                description: MESSAGES.REGISTER_SUCCESS
             });
             navigate("/login");
         } else {
             notification.error({
                 message: "CREATE USER",
-                description: "Error"
+                description: MESSAGES.ERROR
             })
         }
     };
@@ -48,8 +49,12 @@ const RegisterPage = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your email!',
+                                    message: VALIDATION_MESSAGES.REQUIRED_EMAIL,
                                 },
+                                {
+                                    type: 'email',
+                                    message: VALIDATION_MESSAGES.INVALID_EMAIL,
+                                }
                             ]}
                         >
                             <Input />
@@ -61,8 +66,12 @@ const RegisterPage = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your password!',
+                                    message: VALIDATION_MESSAGES.REQUIRED_PASSWORD,
                                 },
+                                {
+                                    min: 6,
+                                    message: VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH,
+                                }
                             ]}
                         >
                             <Input />
@@ -74,7 +83,7 @@ const RegisterPage = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your name!',
+                                    message: VALIDATION_MESSAGES.REQUIRED_NAME,
                                 },
                             ]}
                         >
