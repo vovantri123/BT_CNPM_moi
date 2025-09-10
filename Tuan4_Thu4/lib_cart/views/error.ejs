@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart Library</title>
+    <link rel="stylesheet" href="../public/css/tailwind.css" />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-4">
+            <h1 class="text-xl font-bold text-gray-800">
+              <a href="/" class="hover:text-primary-600">🛒 Cart Library</a>
+            </h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <a
+              href="/products"
+              class="text-gray-600 hover:text-primary-600 font-medium"
+              >Sản phẩm</a
+            >
+            <a
+              href="/cart"
+              class="text-gray-600 hover:text-primary-600 font-medium"
+              >Giỏ hàng</a
+            >
+            <div
+              id="cart-count"
+              class="bg-primary-600 text-white px-2 py-1 rounded-full text-sm font-bold"
+            >
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center py-12">
+          <div class="text-6xl mb-4">❌</div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">
+            Oops! Có lỗi xảy ra
+          </h1>
+          <p class="text-xl text-gray-600 mb-8"><%= message %></p>
+          <div class="space-y-4">
+            <%- UIComponents.button({ text: 'Quay lại trang chủ', variant:
+            'primary', onClick: "window.location.href='/'" }) %> <%-
+            UIComponents.button({ text: 'Quay lại trang trước', variant:
+            'secondary', onClick: 'window.history.back()' }) %>
+          </div>
+          <% if (error && error.status) { %>
+          <div class="mt-8 p-4 bg-red-50 rounded-lg text-left">
+            <h3 class="font-semibold text-red-800">Chi tiết lỗi:</h3>
+            <p class="text-red-600">Status: <%= error.status %></p>
+            <% if (error.stack) { %>
+            <pre class="text-xs text-red-500 mt-2 overflow-auto">
+<%= error.stack %></pre
+            >
+            <% } %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+      });
+      async function updateCartCount() {
+        try {
+          const response = await fetch('/cart/api/cart');
+          const data = await response.json();
+          if (data.success) {
+            const countElement = document.getElementById('cart-count');
+            if (countElement) {
+              countElement.textContent = data.data.totalItems || 0;
+            }
+          }
+        } catch (error) {
+          console.error('Error updating cart count:', error);
+        }
+      }
+      window.updateCartCount = updateCartCount;
+    </script>
+  </body>
+</html>

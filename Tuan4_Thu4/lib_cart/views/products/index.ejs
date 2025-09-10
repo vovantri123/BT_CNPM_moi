@@ -1,0 +1,182 @@
+<div>
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">📦 Danh sách sản phẩm</h1>
+    <div class="flex space-x-4">
+      <%- UIComponents.inputText({ id: 'search', name: 'search', placeholder:
+      'Tìm kiếm sản phẩm...', className: 'w-64' }) %> <%- UIComponents.button({
+      text: 'Tìm kiếm', onClick: 'searchProducts()' }) %>
+    </div>
+  </div>
+
+  <% if (products.length === 0) { %>
+  <div class="text-center py-12">
+    <div class="text-6xl mb-4">📦</div>
+    <h2 class="text-2xl font-semibold text-gray-600 mb-4">
+      Chưa có sản phẩm nào
+    </h2>
+    <p class="text-gray-500">Hãy chạy seed data để thêm sản phẩm mẫu</p>
+  </div>
+  <% } else { %>
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+  >
+    <% products.forEach(product => { %>
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <% if (product.image) { %>
+      <div class="aspect-w-16 aspect-h-9">
+        <img
+          class="w-full h-48 object-cover"
+          src="<%= product.image %>"
+          alt="<%= product.name %>"
+        />
+      </div>
+      <% } %>
+
+      <div class="px-4 py-3 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900"><%= product.name %></h3>
+      </div>
+
+      <div class="px-4 py-4">
+        <div class="space-y-3">
+          <p class="text-gray-600 text-sm line-clamp-2">
+            <%= product.description || 'Không có mô tả' %>
+          </p>
+          <div class="flex justify-between items-center">
+            <span class="text-2xl font-bold text-primary-600">
+              <%= product.price.toLocaleString('vi-VN') %> VNĐ
+            </span>
+            <span class="text-sm text-gray-500">Còn: <%= product.stock %></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">
+        <div class="flex space-x-2">
+          <%- UIComponents.button({ text: 'Thêm vào giỏ', variant: 'primary',
+          size: 'sm', className: 'flex-1', onClick: "addToCart('" + product._id
+          + "')" }) %> <%- UIComponents.button({ text: 'Chi tiết', variant:
+          'secondary', size: 'sm', onClick: "viewProduct('" + product._id + "')"
+          }) %>
+        </div>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- Floating Cart Button -->
+  <div class="fixed bottom-6 right-6">
+    <a
+      href="/cart"
+      class="bg-primary-600 hover:bg-primary-700 text-white p-4 rounded-full shadow-lg transition-colors"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4m-2.4 8l1 6h16"
+        ></path>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Product JavaScript functions
+  async function addToCart(productId) {
+    console.log('Adding product to cart:', productId); // Debug log
+
+    try {
+      const response = await fetch('/cart/api/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+
+      console.log('Response status:', response.status); // Debug log
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Response data:', data); // Debug log
+
+      if (data.success) {
+        // Show success message
+        showNotification('Đã thêm vào giỏ hàng!', 'success');
+        // Optional: redirect to cart page or update UI
+        setTimeout(() => {
+          window.location.href = '/cart';
+        }, 1000);
+      } else {
+        showNotification(data.message || 'Có lỗi xảy ra', 'error');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      showNotification(
+        'Có lỗi xảy ra khi thêm vào giỏ hàng: ' + error.message,
+        'error'
+      );
+    }
+  }
+
+  function viewProduct(productId) {
+    // Placeholder for product detail view
+    alert('Chi tiết sản phẩm: ' + productId);
+  }
+
+  function searchProducts() {
+    const keyword = document.getElementById('search').value.trim();
+    if (!keyword) {
+      window.location.href = '/products';
+      return;
+    }
+    // Simple search by reloading page with search parameter
+    window.location.href = '/products?search=' + encodeURIComponent(keyword);
+  }
+
+  // Simple notification system
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className =
+      'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg';
+
+    const styles = {
+      success: 'bg-green-500 text-white',
+      error: 'bg-red-500 text-white',
+      info: 'bg-blue-500 text-white',
+    };
+
+    notification.className += ' ' + styles[type];
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        document.body.removeChild(notification);
+      }
+    }, 3000);
+  }
+
+  // Enter key search - simple implementation
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+      searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          searchProducts();
+        }
+      });
+    }
+  });
+</script>

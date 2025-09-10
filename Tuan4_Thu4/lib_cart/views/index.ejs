@@ -1,0 +1,68 @@
+<div class="text-center py-16">
+  <div class="mb-8">
+    <div class="text-6xl mb-4">🛒</div>
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+      Chào mừng đến với Cart Library
+    </h1>
+    <p class="text-xl text-gray-600 mb-8">
+      Thư viện quản lý giỏ hàng cho ứng dụng web của bạn
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <%- UIComponents.card({
+      title: '📦 Quản lý sản phẩm',
+      content: `
+        <p class="text-gray-600 mb-4">
+          Duyệt qua danh sách sản phẩm và thêm vào giỏ hàng một cách dễ dàng
+        </p>
+      `,
+      footer: UIComponents.button({
+        text: 'Xem sản phẩm',
+        variant: 'primary',
+        onClick: "window.location.href='/products'"
+      })
+    }) %>
+
+    <%- UIComponents.card({
+      title: '🛒 Giỏ hàng',
+      content: `
+        <p class="text-gray-600 mb-4">
+          Quản lý giỏ hàng của bạn, cập nhật số lượng và tiến hành thanh toán
+        </p>
+      `,
+      footer: UIComponents.button({
+        text: 'Xem giỏ hàng',
+        variant: 'secondary',
+        onClick: "window.location.href='/cart'"
+      })
+    }) %>
+  </div>
+
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Tính năng nổi bật</h2>
+    <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div class="text-3xl mb-3">⚡</div>
+        <h3 class="font-semibold text-lg mb-2">Hiệu suất cao</h3>
+        <p class="text-gray-600">
+          Được tối ưu hóa cho hiệu suất và tốc độ tải nhanh
+        </p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div class="text-3xl mb-3">🔒</div>
+        <h3 class="font-semibold text-lg mb-2">Bảo mật</h3>
+        <p class="text-gray-600">
+          Dữ liệu được bảo vệ với các biện pháp bảo mật hiện đại
+        </p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div class="text-3xl mb-3">📱</div>
+        <h3 class="font-semibold text-lg mb-2">Responsive</h3>
+        <p class="text-gray-600">
+          Giao diện thân thiện trên mọi thiết bị và màn hình
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

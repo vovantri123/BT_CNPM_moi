@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title || 'Cart Library' %></title>
+    <link rel="stylesheet" href="/public/css/tailwind.css" />
+    <link rel="stylesheet" href="/public/css/style.css" />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-4">
+            <h1 class="text-xl font-bold text-gray-800">
+              <a href="/" class="hover:text-primary-600">🛒 Cart Library</a>
+            </h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <a
+              href="/products"
+              class="text-gray-600 hover:text-primary-600 font-medium"
+              >Sản phẩm</a
+            >
+            <a
+              href="/cart"
+              class="text-gray-600 hover:text-primary-600 font-medium"
+              >Giỏ hàng</a
+            >
+            <div
+              id="cart-count"
+              class="bg-primary-600 text-white px-2 py-1 rounded-full text-sm font-bold"
+            >
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8"><%- body %></main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+      <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center">
+          <p>&copy; 2024 Cart Library. Made with ❤️ for CNPM assignment.</p>
+          <p class="text-gray-400 text-sm mt-2">
+            Built with Node.js, Express, MongoDB, TailwindCSS
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/public/js/cart.js"></script>
+    <script>
+      // Load cart count on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+      });
+
+      // Update cart count
+      async function updateCartCount() {
+        try {
+          const response = await fetch('/cart/api/cart');
+          const data = await response.json();
+          if (data.success) {
+            const countElement = document.getElementById('cart-count');
+            if (countElement) {
+              countElement.textContent = data.data.totalItems || 0;
+            }
+          }
+        } catch (error) {
+          console.error('Error updating cart count:', error);
+        }
+      }
+
+      // Global functions
+      window.updateCartCount = updateCartCount;
+    </script>
+  </body>
+</html>
