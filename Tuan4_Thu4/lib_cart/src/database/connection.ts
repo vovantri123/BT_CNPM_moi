@@ -13,17 +13,32 @@ export class DatabaseConnection {
     return DatabaseConnection.instance;
   }
 
-  async connect(
-    mongoUri: string = process.env.MONGODB_URI ||
-      'mongodb://localhost:27017/lib_cart'
-  ): Promise<void> {
-    if (this.isConnected) {
-      console.log('Database đã được kết nối');
-      return;
+  async connect(mongoUri: string | undefined = undefined): Promise<void> {
+    const uri =
+      mongoUri ||
+      process.env.MONGODB_URI ||
+      'mongodb://localhost:27017/lib_cart';
+
+    // Nếu đã kết nối với cùng URI thì không làm gì
+    if (this.isConnected && mongoose.connection.readyState === 1) {
+      const currentUri =
+        mongoose.connection.host +
+        ':' +
+        mongoose.connection.port +
+        '/' +
+        mongoose.connection.name;
+      const newUri = uri.replace('mongodb://localhost:27017/', '');
+      if (currentUri.includes(newUri)) {
+        console.log('Database đã được kết nối với cùng URI');
+        return;
+      }
+      // Nếu URI khác nhau, ngắt kết nối cũ trước
+      await mongoose.disconnect();
+      this.isConnected = false;
     }
 
     try {
-      await mongoose.connect(mongoUri, {
+      await mongoose.connect(uri, {
         // Các options mặc định
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,
@@ -31,7 +46,7 @@ export class DatabaseConnection {
       });
 
       this.isConnected = true;
-      console.log('Kết nối MongoDB thành công:', mongoUri);
+      console.log('Kết nối MongoDB thành công:', uri);
 
       // Xử lý sự kiện disconnect
       mongoose.connection.on('disconnected', () => {

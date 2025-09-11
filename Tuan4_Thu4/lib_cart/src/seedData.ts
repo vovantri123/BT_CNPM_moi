@@ -141,9 +141,11 @@ export class DataSeeder {
     }
   }
 
-  static async seedAll(): Promise<void> {
+  static async seedAll(mongoUri?: string): Promise<void> {
     try {
       console.log('🚀 Bắt đầu seeding toàn bộ dữ liệu...');
+
+      // Không cần kết nối lại database vì đã được kết nối từ initialize()
 
       await this.seedProducts();
       await this.seedCartItems();
@@ -169,7 +171,8 @@ export class DataSeeder {
 // Chạy seeding nếu file này được gọi trực tiếp
 async function runSeeder() {
   try {
-    // Kết nối database
+    // Kết nối database - không cần truyền mongoUri vì sẽ dùng mặc định
+    // Chỉ chạy khi file này được gọi trực tiếp, không phải từ library
     await dbConnection.connect();
 
     // Run seeding
@@ -186,4 +189,7 @@ async function runSeeder() {
   }
 }
 
-runSeeder();
+// Chỉ chạy seeding khi file này được gọi trực tiếp (không phải import)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runSeeder();
+}

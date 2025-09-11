@@ -13,10 +13,12 @@ const __dirname = path.dirname(__filename);
 export class CartLibraryServer {
   private app: express.Application;
   private port: number;
+  private mongoUri: string | undefined;
 
-  constructor(port: number = 3000) {
+  constructor(port: number = 3000, mongoUri?: string) {
     this.app = express();
     this.port = port;
+    this.mongoUri = mongoUri;
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -65,8 +67,8 @@ export class CartLibraryServer {
     // Product routes
     this.app.use('/products', productRoutes);
 
-    // 404 handler
-    this.app.use('*', (req, res) => {
+    // 404 handler (Express 5.x compatible)
+    this.app.use((req, res) => {
       res.status(404).render('error', {
         message: 'Trang không tìm thấy',
         error: { status: 404 },
@@ -95,7 +97,7 @@ export class CartLibraryServer {
   async start(): Promise<void> {
     try {
       // Kết nối database
-      await dbConnection.connect();
+      await dbConnection.connect(this.mongoUri);
 
       // Start server
       this.app.listen(this.port, () => {
@@ -118,5 +120,5 @@ export class CartLibraryServer {
 }
 
 // Chạy server
-const server = new CartLibraryServer();
-server.start().catch(console.error);
+// const server = new CartLibraryServer();
+// server.start().catch(console.error);

@@ -32,6 +32,7 @@ export { DataSeeder } from './seedData.js';
 // Main library class để sử dụng dễ dàng
 export class CartLibrary {
   private server: any = null;
+  private static mongoUri?: string;
 
   /**
    * Khởi tạo thư viện với cấu hình
@@ -43,6 +44,7 @@ export class CartLibrary {
     } = {}
   ): Promise<void> {
     const { mongoUri, port } = config;
+    CartLibrary.mongoUri = mongoUri;
 
     try {
       // Kết nối database
@@ -53,7 +55,7 @@ export class CartLibrary {
       // Tạo server nếu có port
       if (port) {
         const { CartLibraryServer } = await import('./server.js');
-        const server = new CartLibraryServer(port);
+        const server = new CartLibraryServer(port, mongoUri);
         await server.start();
         console.log('✅ Cart Library: Server started');
       }
@@ -69,7 +71,7 @@ export class CartLibrary {
   static async seedData(): Promise<void> {
     try {
       const { DataSeeder } = await import('./seedData.js');
-      await DataSeeder.seedAll();
+      await DataSeeder.seedAll(CartLibrary.mongoUri);
       console.log('✅ Cart Library: Sample data seeded');
     } catch (error) {
       console.error('❌ Cart Library seeding failed:', error);

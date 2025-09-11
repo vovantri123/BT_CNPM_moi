@@ -68,9 +68,11 @@ npm publish
 
 ## 🔧 Troubleshooting
 
-- Lỗi permission: `npm adduser`, `npm publish --access public`
-- Lỗi tên package: Đổi tên trong package.json
-- Lỗi 2FA: `npm publish --otp=123456`
-- Kiểm tra files: `npm pack --dry-run`
+- Khi phát triển thư viện, hãy comment đoạn khởi chạy server trong `server.ts` để tránh tự động chạy ứng dụng:
+    ```typescript
+    // Khởi chạy server
+    // const server = new CartLibraryServer();
+    // server.start().catch(console.error);
+    ```
 
 ---
