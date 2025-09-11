@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Giỏ hàng - Test Lib Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                500: '#3B82F6',
+                600: '#2563EB',
+                700: '#1D4ED8',
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-gray-900">🛒 Test Lib Cart</h1>
+          <div class="flex items-center space-x-4">
+            <%- UIComponents.button({ text: '← Quay lại trang chủ', variant:
+            'secondary', onClick: "window.location.href='/'" }) %>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">🛒 Giỏ hàng của bạn</h1>
+        <% if (cartSummary.items.length > 0) { %> <%- UIComponents.button({
+        text: 'Xóa tất cả', variant: 'danger', onClick: 'clearCart()' }) %> <% }
+        %>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2">
+          <% if (cartSummary.items.length === 0) { %>
+          <div class="bg-white rounded-lg shadow-sm border p-12 text-center">
+            <div class="text-6xl mb-4">🛒</div>
+            <h2 class="text-2xl font-semibold text-gray-600 mb-4">
+              Giỏ hàng trống
+            </h2>
+            <p class="text-gray-500 mb-6">
+              Hãy thêm một số sản phẩm vào giỏ hàng của bạn
+            </p>
+            <%- UIComponents.button({ text: 'Khám phá sản phẩm', variant:
+            'primary', onClick: "window.location.href='/'" }) %>
+          </div>
+          <% } else { %>
+          <div class="space-y-4">
+            <% cartSummary.items.forEach(item => { %>
+            <div
+              id="cart-item-<%= item._id %>"
+              class="bg-white rounded-lg shadow-sm border p-6"
+            >
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                  <img
+                    src="<%= item.image || '/placeholder-product.png' %>"
+                    alt="<%= item.productName %>"
+                    class="w-20 h-20 object-cover rounded-lg"
+                  />
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    <%= item.productName %>
+                  </h3>
+                  <p class="text-gray-600">
+                    <%= item.price.toLocaleString('vi-VN') %> VNĐ
+                  </p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <%- UIComponents.button({ text: '-', size: 'sm', onClick:
+                  `updateQuantity('${item._id}', ${item.quantity - 1})` }) %>
+                  <span
+                    class="px-3 py-1 bg-gray-100 rounded text-center min-w-[50px] font-medium"
+                  >
+                    <%= item.quantity %>
+                  </span>
+                  <%- UIComponents.button({ text: '+', size: 'sm', onClick:
+                  `updateQuantity('${item._id}', ${item.quantity + 1})` }) %>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-primary-600">
+                    <%= (item.price * item.quantity).toLocaleString('vi-VN') %>
+                    VNĐ
+                  </p>
+                  <%- UIComponents.button({ text: '🗑️ Xóa', variant: 'danger',
+                  size: 'sm', onClick: `removeItem('${item._id}')` }) %>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+        </div>
+
+        <!-- Cart Summary -->
+        <% if (cartSummary.items.length > 0) { %>
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-sm border p-6 sticky top-4">
+            <h2 class="text-xl font-semibold mb-4">📊 Tổng kết đơn hàng</h2>
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span>Số lượng sản phẩm:</span>
+                <span class="font-semibold"><%= cartSummary.totalItems %></span>
+              </div>
+              <div class="flex justify-between">
+                <span>Tạm tính:</span>
+                <span class="font-semibold">
+                  <%= cartSummary.totalPrice.toLocaleString('vi-VN') %> VNĐ
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span>Phí vận chuyển:</span>
+                <span class="text-green-600 font-medium">Miễn phí</span>
+              </div>
+              <hr class="my-4" />
+              <div class="flex justify-between text-lg font-bold">
+                <span>Tổng cộng:</span>
+                <span class="text-primary-600">
+                  <%= cartSummary.totalPrice.toLocaleString('vi-VN') %> VNĐ
+                </span>
+              </div>
+            </div>
+            <div class="mt-6 space-y-3">
+              <%- UIComponents.button({ text: '💳 Thanh toán', variant:
+              'primary', className: 'w-full', onClick: 'checkout()' }) %> <%-
+              UIComponents.button({ text: '🔄 Cập nhật giỏ hàng', variant:
+              'secondary', className: 'w-full', onClick:
+              'window.location.reload()' }) %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div
+      id="loading"
+      class="fixed inset-0 bg-black bg-opacity-50 justify-center items-center hidden"
+    >
+      <div class="bg-white rounded-lg p-6 text-center">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"
+        ></div>
+        <p>Đang xử lý...</p>
+      </div>
+    </div>
+
+    <script>
+      // Show/hide loading
+      function showLoading() {
+        const loading = document.getElementById('loading');
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+      }
+
+      function hideLoading() {
+        const loading = document.getElementById('loading');
+        loading.classList.add('hidden');
+        loading.classList.remove('flex');
+      }
+
+      // Cart JavaScript functions
+      async function updateQuantity(itemId, newQuantity) {
+        if (newQuantity <= 0) {
+          removeItem(itemId);
+          return;
+        }
+
+        showLoading();
+        try {
+          // Sử dụng API từ thư viện
+          const response = await fetch('/shop/api/cart/' + itemId, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ quantity: newQuantity }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showNotification('Đã cập nhật số lượng!', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+          } else {
+            showNotification(data.message || 'Có lỗi xảy ra', 'error');
+          }
+        } catch (error) {
+          console.error('Error updating quantity:', error);
+          showNotification('Có lỗi xảy ra khi cập nhật số lượng', 'error');
+        } finally {
+          hideLoading();
+        }
+      }
+
+      async function removeItem(itemId) {
+        if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+
+        showLoading();
+        try {
+          const response = await fetch('/shop/api/cart/' + itemId, {
+            method: 'DELETE',
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showNotification('Đã xóa sản phẩm!', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+          } else {
+            showNotification(data.message || 'Có lỗi xảy ra', 'error');
+          }
+        } catch (error) {
+          console.error('Error removing item:', error);
+          showNotification('Có lỗi xảy ra khi xóa sản phẩm', 'error');
+        } finally {
+          hideLoading();
+        }
+      }
+
+      async function clearCart() {
+        if (!confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) return;
+
+        showLoading();
+        try {
+          const response = await fetch('/shop/api/cart', {
+            method: 'DELETE',
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showNotification('Đã xóa toàn bộ giỏ hàng!', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+          } else {
+            showNotification(data.message || 'Có lỗi xảy ra', 'error');
+          }
+        } catch (error) {
+          console.error('Error clearing cart:', error);
+          showNotification('Có lỗi xảy ra khi xóa giỏ hàng', 'error');
+        } finally {
+          hideLoading();
+        }
+      }
+
+      function checkout() {
+        alert(
+          '🎉 Tính năng thanh toán sẽ được phát triển trong phiên bản tiếp theo!\n\nCảm ơn bạn đã sử dụng Test Lib Cart!'
+        );
+      }
+
+      function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+          type === 'success'
+            ? 'bg-green-500'
+            : type === 'error'
+            ? 'bg-red-500'
+            : 'bg-blue-500'
+        } text-white`;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.remove();
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
